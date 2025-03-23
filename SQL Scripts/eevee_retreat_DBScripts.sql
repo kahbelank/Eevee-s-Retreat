@@ -2,60 +2,38 @@
 CREATE DATABASE IF NOT EXISTS eevee_retreat;
 USE eevee_retreat;
 
--- Table for Role entity
-CREATE TABLE role (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    PRIMARY KEY (id)
-);
+-- INSERT DATA 
+-- Insert dummy data into the Role table
+INSERT INTO role (name) VALUES ('ADMIN'), ('USER');
 
--- Table for User entity (using backticks because "user" is a reserved keyword)
-CREATE TABLE `user` (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    firstName VARCHAR(255),
-    lastName VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    PRIMARY KEY (id)
-);
+-- Insert dummy data into the User table
+INSERT INTO `user` (first_name, last_name, email, password) VALUES 
+('John', 'Doe', 'john.doe@example.com', 'password123'),
+('Jane', 'Smith', 'jane.smith@example.com', 'password456'),
+('Alice', 'Brown', 'alice.brown@example.com', 'password789');
 
--- Table for Room entity
-CREATE TABLE room (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    roomType VARCHAR(255),
-    roomPrice DECIMAL(10,2),
-    isBooked BOOLEAN,
-    photo BLOB,
-    PRIMARY KEY (id)
-);
+-- Insert dummy data into the Room table
+INSERT INTO room (room_type, room_price, is_booked, photo) VALUES 
+('Single', 100.00, 0, NULL),
+('Double', 150.00, 0, NULL),
+('Suite', 250.00, 0, NULL);
 
--- Table for BookedRoom entity
-CREATE TABLE booked_room (
-    bookingId BIGINT NOT NULL AUTO_INCREMENT,
-    check_in DATE,
-    check_out DATE,
-    guest_fullName VARCHAR(255),
-    guest_email VARCHAR(255),
-    adults INT,
-    children INT,
-    total_guest INT,
-    confirmation_Code VARCHAR(255),
-    room_id BIGINT,
-    PRIMARY KEY (bookingId),
-    CONSTRAINT fk_room FOREIGN KEY (room_id) REFERENCES room(id)
-);
+-- Insert dummy data into the BookedRoom table
+INSERT INTO booked_room (check_in, check_out, guest_full_name, guest_email, adults, children, total_guest, confirmation_code, room_id, user_id) VALUES 
+('2025-04-10', '2025-04-15', 'John Doe', 'john.doe@example.com', 2, 1, 3, '1234567890', 1, 1),
+('2025-05-01', '2025-05-05', 'Jane Smith', 'jane.smith@example.com', 1, 0, 1, '0987654321', 2, 2);
 
--- Join table for Many-to-Many relationship between User and Role
-CREATE TABLE user_roles (
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES `user`(id),
-    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id)
-);
+-- Insert dummy data into the user_roles join table
+INSERT INTO user_roles (user_id, role_id) VALUES
+(1, 1),  -- John Doe is an ADMIN
+(2, 2),  -- Jane Smith is a USER
+(3, 2);  -- Alice Brown is a USER
 
--- Run this later --
-ALTER TABLE booked_room
-ADD COLUMN user_id BIGINT,
-ADD CONSTRAINT fk_user_booking FOREIGN KEY (user_id) REFERENCES `user`(id);
+-- Optionally update room status to indicate that booked rooms are marked as booked
+UPDATE room SET is_booked = true WHERE id IN (1, 2);
+
+
+DELETE from user_roles;
+
+
 
