@@ -79,7 +79,7 @@ const FindBooking = () => {
 
 	return (
 		<>
-			<div className="container mt-5 d-flex flex-column justify-content-center align-items-center">
+			<div className="container-fluid mt-3 pt-5 pb-5 d-flex flex-column justify-content-center align-items-center" style={{ backgroundColor: "white" }}>
 				<h2 className="text-center mb-4">Find My Booking</h2>
 				<form onSubmit={handleFormSubmit} className="col-md-6">
 					<div className="input-group mb-3">

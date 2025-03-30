@@ -1,16 +1,26 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 const MainHeader = () => {
 	return (
-		<header className="header-banner">
-			<div className="overlay"></div>
-			<div className="animated-texts overlay-content">
+		<div className="main-header">
+			{/* Text Container Above the Banner */}
+			<div className="header-text">
 				<h1>
-					Welcome to <span className="hotel-color"> Eevee's Retreat</span>
+					<span className="hotel-color2"> Giving the best <br />
+					just for you</span>
 				</h1>
-				<h4>Experience the Best Hospitality in Town</h4>
+				
 			</div>
-		</header>
+			<Link to={"/browse-all-rooms"} className="hotel-color3">
+				Browse all rooms
+			</Link>
+			
+			{/* Banner with Image and Overlay */}
+			<header className="header-banner">
+				<div className="overlay"></div>
+			</header>
+		</div>
 	)
 }
 

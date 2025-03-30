@@ -1,10 +1,11 @@
 body {
   min-height: 100vh;
   padding-bottom: 50px;
+  background-color: #556052;
 }
 
 .card {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 /* Navigation bar definitions */
@@ -14,6 +15,7 @@ body {
 
 .navbar .navbar-nav .nav-link {
   padding: 1em;
+  color: #fff !important;
 }
 
 .navbar .navbar-nav .nav-item {
@@ -26,7 +28,7 @@ body {
   left: 0;
   right: 0;
   content: '';
-  background-color: rgb(169, 77, 123);
+  background-color: rgb(255, 255, 255);
   width: 0;
   margin: 0 auto;
   height: 4px;
@@ -61,7 +63,8 @@ body {
 
 /* Hotel custom color */
 .btn-hotel {
-  background-color: rgb(169, 77, 123);
+
+  background-color: #556052;
   color: #fff;
 }
 
@@ -75,7 +78,57 @@ body {
 }
 
 .hotel-color {
-  color: rgb(169, 77, 123);
+  color: rgb(255, 255, 255);
+  font-weight: 700;
+  font-size: larger;
+  font-family: 'Brush Script MT', cursive;
+  
+}
+
+.hotel-colortext {
+  color:  #556052;
+  font-weight: 700;
+  font-size: larger;
+
+  
+}
+
+.bg-new {
+  background-color:  #e7e7e7;
+}
+
+.hotel-color2 {
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  font-size: 100px;
+  font-family: Garamond, serif;
+  line-height: 1.0; 
+  
+}
+
+.hotel-color3 {
+  color: #556052;
+  font-weight: 700;
+  font-size: 34px;
+  font-weight: 300;
+  font-family: Garamond, serif;
+  line-height: 1.0; 
+  text-decoration: none; /* Removes underline */
+  text-align: center;   /* Centers the text */
+  display: block;
+  margin-bottom: 30px;
+  
+}
+
+.header-text {
+  text-align: left;
+  margin-bottom: 4%;
+  margin-top: 4%;
+  padding-left: 5%;
+}
+
+custom-search-btn {
+  margin-left: 20px; 
 }
 
 .room-price {
@@ -94,28 +147,31 @@ body {
 .parallax {
   background-image: url("./assets/images/parrall.jpg");
   background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-position: center center;
   background-size: cover;
-  height: 50vh;
+  position: relative;
+  height: 300px;
 }
 
 .header {
   position: relative;
-  height: 150px;
+  height: 250px;
   background-size: cover;
   background-image: url("./assets/images/services4.jpg");
   background-position: center center;
+  display: flex;   
+  align-items: center;        /* Vertical centering */
+  justify-content: center;    /* Horizontal centering */
 }
 
 .header-title {
   color: #fff;
   font-size: 4rem;
   align-content: center;
+  text-align: center;
 }
 
 .parallax {
-  margin-top: 50px;
   color: white;
   text-shadow: 2px 2px black;
 }
@@ -243,4 +299,11 @@ h2 {
   background-color: #f5f5f5;
   height: 60px;
   text-align: center;
+}
+
+.full-width {
+  background-position: center;
+  position: relative;
+  background-size: cover;
+  
 }

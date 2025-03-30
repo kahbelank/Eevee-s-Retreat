@@ -35,7 +35,7 @@ const Login = () => {
 	}
 
 	return (
-		<section className="container col-6 mt-5 mb-5">
+		<section className="container col-6 mt-5 mb-5 pt-5 pb-5" style={{ backgroundColor: "white" }}>
 			{errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
 			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>

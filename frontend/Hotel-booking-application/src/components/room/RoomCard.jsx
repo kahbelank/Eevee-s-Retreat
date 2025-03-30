@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useContext } from "react"
 import { Card, Col } from "react-bootstrap"
 import { Link } from "react-router-dom"
@@ -18,7 +19,7 @@ const RoomCard = ({ room }) => {
 						</Link>
 					</div>
 					<div className="flex-grow-1 ml-3 px-5">
-						<Card.Title className="hotel-color">{room.roomType}</Card.Title>
+						<Card.Title className="hotel-colortext">{room.roomType}</Card.Title>
 						<Card.Title className="room-price">{room.roomPrice} / night</Card.Title>
 						<Card.Text>Some room information goes here for the guest to read through</Card.Text>
 					</div>

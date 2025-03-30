@@ -62,12 +62,12 @@ const RoomSearch = () => {
 
 	return (
 		<>
-			<Container className="shadow mt-n5 mb-5 py-5">
+			<Container fluid className="mt-n2  py-5" style={{ backgroundColor: "white" }}>
 				<Form onSubmit={handleSearch}>
 					<Row className="justify-content-center">
 						<Col xs={12} md={3}>
 							<Form.Group controlId="checkInDate">
-								<Form.Label>Check-in Date</Form.Label>
+								<Form.Label >Check-in Date</Form.Label>
 								<Form.Control
 									type="date"
 									name="checkInDate"
@@ -79,7 +79,7 @@ const RoomSearch = () => {
 						</Col>
 						<Col xs={12} md={3}>
 							<Form.Group controlId="checkOutDate">
-								<Form.Label>Check-out Date</Form.Label>
+								<Form.Label >Check-out Date</Form.Label>
 								<Form.Control
 									type="date"
 									name="checkOutDate"
@@ -91,13 +91,13 @@ const RoomSearch = () => {
 						</Col>
 						<Col xs={12} md={3}>
 							<Form.Group controlId="roomType">
-								<Form.Label>Room Type</Form.Label>
+								<Form.Label >Room Type</Form.Label>
 								<div className="d-flex">
 									<RoomTypeSelector
 										handleRoomInputChange={handleInputChange}
 										newRoom={searchQuery}
 									/>
-									<Button variant="secondary" type="submit" className="ml-2">
+									<Button variant="dark" type="submit" className="custom-search-btn ml-3">
 										Search
 									</Button>
 								</div>
@@ -113,7 +113,7 @@ const RoomSearch = () => {
 				) : (
 					<p className="mt-4">No rooms available for the selected dates and room type.</p>
 				)}
-				{errorMessage && <p className="text-danger">{errorMessage}</p>}
+				{errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
 			</Container>
 		</>
 	)

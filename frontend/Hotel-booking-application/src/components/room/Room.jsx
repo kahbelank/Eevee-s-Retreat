@@ -65,7 +65,7 @@ const Room = () => {
 
 			<Row>{renderRooms()}</Row>
 
-			<Row>
+			{/* <Row>
 				<Col md={6} className="d-flex align-items-center justify-content-end">
 					<RoomPaginator
 						currentPage={currentPage}
@@ -73,7 +73,7 @@ const Room = () => {
 						onPageChange={handlePageChange}
 					/>
 				</Col>
-			</Row>
+			</Row> */}
 		</Container>
 	)
 }
