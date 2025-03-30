@@ -35,7 +35,7 @@ const Registration = () => {
 	}
 
 	return (
-		<section className="container col-6 mt-5 mb-5 pt-5 pb-5" style={{ backgroundColor: "white",paddingLeft:"30px", paddingRight:"30px" }}>
+		<section className="container col-6 mt-5 mb-5 pt-5 pb-5" style={{ backgroundColor: "white",paddingLeft:"30px", paddingRight:"30px", borderRadius: "15px" }}>
 			{errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
 			{successMessage && <p className="alert alert-success">{successMessage}</p>}
 
@@ -43,7 +43,7 @@ const Registration = () => {
 			<form onSubmit={handleRegistration}>
 				<div className="mb-3 row">
 					<label htmlFor="firstName" className="col-sm-2 col-form-label">
-						first Name
+						First Name
 					</label>
 					<div className="col-sm-10">
 						<input
