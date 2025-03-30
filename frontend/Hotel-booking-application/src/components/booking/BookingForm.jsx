@@ -97,7 +97,7 @@ const currentUser = localStorage.getItem("userId")
 
 	return (
 		<>
-			<div className="container mb-5">
+			<div className="container-fluid mb-5 " style={{ backgroundColor: "white" }}>
 				<div className="row">
 					<div className="col-md-6">
 						<div className="card card-body mt-5">
@@ -105,8 +105,8 @@ const currentUser = localStorage.getItem("userId")
 
 							<Form noValidate validated={validated} onSubmit={handleSubmit}>
 								<Form.Group>
-									<Form.Label htmlFor="guestFullName" className="hotel-color">
-										Fullname
+									<Form.Label htmlFor="guestFullName" className="hotel-colortext2">
+										Full Name:
 									</Form.Label>
 									<FormControl
 										required
@@ -123,8 +123,8 @@ const currentUser = localStorage.getItem("userId")
 								</Form.Group>
 
 								<Form.Group>
-									<Form.Label htmlFor="guestEmail" className="hotel-color">
-										Email
+									<Form.Label htmlFor="guestEmail" className="hotel-colortext2 mt-2">
+										Email:
 									</Form.Label>
 									<FormControl
 										required
@@ -142,10 +142,10 @@ const currentUser = localStorage.getItem("userId")
 								</Form.Group>
 
 								<fieldset style={{ border: "2px" }}>
-									<legend>Lodging Period</legend>
+									<legend className="mt-2">Lodging Period</legend>
 									<div className="row">
 										<div className="col-6">
-											<Form.Label htmlFor="checkInDate" className="hotel-color">
+											<Form.Label htmlFor="checkInDate" className="hotel-colortext2">
 												Check-in date
 											</Form.Label>
 											<FormControl
@@ -164,7 +164,7 @@ const currentUser = localStorage.getItem("userId")
 										</div>
 
 										<div className="col-6">
-											<Form.Label htmlFor="checkOutDate" className="hotel-color">
+											<Form.Label htmlFor="checkOutDate" className="hotel-colortext2">
 												Check-out date
 											</Form.Label>
 											<FormControl
@@ -186,10 +186,10 @@ const currentUser = localStorage.getItem("userId")
 								</fieldset>
 
 								<fieldset style={{ border: "2px" }}>
-									<legend>Number of Guest</legend>
+									<legend className="mt-2">Number of Guest</legend>
 									<div className="row">
 										<div className="col-6">
-											<Form.Label htmlFor="numOfAdults" className="hotel-color">
+											<Form.Label htmlFor="numOfAdults" className="hotel-colortext2">
 												Adults
 											</Form.Label>
 											<FormControl
@@ -207,7 +207,7 @@ const currentUser = localStorage.getItem("userId")
 											</Form.Control.Feedback>
 										</div>
 										<div className="col-6">
-											<Form.Label htmlFor="numOfChildren" className="hotel-color">
+											<Form.Label htmlFor="numOfChildren" className="hotel-colortext2">
 												Children
 											</Form.Label>
 											<FormControl
@@ -236,7 +236,7 @@ const currentUser = localStorage.getItem("userId")
 						</div>
 					</div>
 
-					<div className="col-md-4">
+					<div className="col-md-5" style={{ marginLeft: "20px",  }}>
 						{isSubmitted && (
 							<BookingSummary
 								booking={booking}

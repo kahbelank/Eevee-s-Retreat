@@ -41,8 +41,8 @@ const Checkout = () => {
 
 	return (
 		<div>
-			<section className="container">
-				<div className="row">
+			<section className="container-fluid mt-3 " style={{ backgroundColor: "white" }}>
+				<div className="row" style={{ marginLeft: "50px" }}>
 					<div className="col-md-4 mt-5 mb-5">
 						{isLoading ? (
 							<p>Loading room information...</p>
@@ -53,7 +53,7 @@ const Checkout = () => {
 								<img
 									src={`data:image/png;base64,${roomInfo.photo}`}
 									alt="Room photo"
-									style={{ width: "100%", height: "200px" }}
+									style={{ width: "100%", height: "230px" }}
 								/>
 								<table className="table table-bordered">
 									<tbody>
@@ -103,7 +103,7 @@ const Checkout = () => {
 					</div>
 				</div>
 			</section>
-			<div className="container">
+			<div className="container-fluid" style={{ paddingLeft: "0px", paddingRight: "0px"}}>
 				<RoomCarousel />
 			</div>
 		</div>

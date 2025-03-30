@@ -7,13 +7,13 @@ const BookingSuccess = () => {
 	const message = location.state?.message
 	const error = location.state?.error
 	return (
-		<div className="container">
+		<div className="container-fluid"  style={{ backgroundColor: "white", marginLeft:"0px", paddingLeft:"0px", paddingRight:"0px" }}>
 			<Header title="Booking Success" />
-			<div className="mt-5">
+			<div className="mt-5" style={{ backgroundColor: "white", paddingLeft:"0px", paddingRight:"0px", textAlign:"center" }}>
 				{message ? (
 					<div>
 						<h3 className="text-success"> Booking Success!</h3>
-						<p className="text-success">{message}</p>
+						<p className="text-success" style={{ paddingBottom:"100%", paddingRight:"0px", textAlign:"center" }}>{message}</p>
 					</div>
 				) : (
 					<div>

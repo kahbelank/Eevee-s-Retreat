@@ -76,7 +76,7 @@ const Profile = () => {
 	}
 
 	return (
-		<div className="container">
+		<div className="container-fluid">
 			{errorMessage && <p className="text-danger">{errorMessage}</p>}
 			{message && <p className="text-danger">{message}</p>}
 			{user ? (
