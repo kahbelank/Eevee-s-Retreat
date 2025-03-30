@@ -12,9 +12,9 @@ const MainHeader = () => {
 				</h1>
 				
 			</div>
-			<Link to={"/browse-all-rooms"} className="hotel-color3">
+			{/* <Link to={"/browse-all-rooms"} className="hotel-color3">
 				Browse all rooms
-			</Link>
+			</Link> */}
 			
 			{/* Banner with Image and Overlay */}
 			<header className="header-banner">
