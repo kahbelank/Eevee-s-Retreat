@@ -2,6 +2,56 @@
 CREATE DATABASE IF NOT EXISTS eevee_retreat;
 USE eevee_retreat;
 
+-- Create the Role table
+CREATE TABLE IF NOT EXISTS role (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Create the User table
+CREATE TABLE IF NOT EXISTS `user` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Create the Room table
+CREATE TABLE IF NOT EXISTS room (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_type VARCHAR(50) NOT NULL,
+    room_price DECIMAL(10, 2) NOT NULL,
+    is_booked BOOLEAN DEFAULT 0,
+    photo BLOB
+);
+
+-- Create the BookedRoom table
+CREATE TABLE IF NOT EXISTS booked_room (
+    booking_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    check_in DATE NOT NULL,
+    check_out DATE NOT NULL,
+    guest_full_name VARCHAR(100) NOT NULL,
+    guest_email VARCHAR(100) NOT NULL,
+    adults INT NOT NULL,
+    children INT NOT NULL,
+    total_guest INT NOT NULL,
+    confirmation_code VARCHAR(50) NOT NULL,
+    room_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (room_id) REFERENCES room(id),
+    FOREIGN KEY (user_id) REFERENCES `user`(id)
+);
+
+-- Create the user_roles join table
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES `user`(id),
+    FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
 -- INSERT DATA 
 -- Insert dummy data into the Role table
 INSERT INTO role (name) VALUES ('ADMIN'), ('USER');
@@ -32,8 +82,5 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 -- Optionally update room status to indicate that booked rooms are marked as booked
 UPDATE room SET is_booked = true WHERE id IN (1, 2);
 
-
-DELETE from user_roles;
-
-
-
+-- If you want to delete user roles (commented out for now)
+-- DELETE from user_roles;
