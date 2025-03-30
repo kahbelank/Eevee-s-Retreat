@@ -56,7 +56,7 @@ const AddRoom = () => {
 
 	return (
 		<>
-			<section className="container mt-5 mb-5">
+			<section className="container mt-5 mb-5" style={{ backgroundColor: "white", paddingLeft:"20px", paddingRight:"20px", paddingBottom:"50px", borderRadius: "15px" }}>
 				<div className="row justify-content-center">
 					<div className="col-md-8 col-lg-6">
 						<h2 className="mt-5 mb-2">Add a New Room</h2>
