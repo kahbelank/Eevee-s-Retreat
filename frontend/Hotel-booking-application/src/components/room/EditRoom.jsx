@@ -116,12 +116,16 @@ const EditRoom = () => {
 							/>
 							{imagePreview && (
 								<img
-									src={`data:image/png;base64,${imagePreview}`}
+									src={
+									imagePreview.startsWith("blob:")
+										? imagePreview
+										: `data:image/png;base64,${imagePreview}`
+									}
 									alt="Room preview"
-									style={{ maxWidth: "400px", maxHeight: "400" }}
+									style={{ maxWidth: "400px", maxHeight: "400px" }}
 									className="mt-3"
 								/>
-							)}
+								)}
 						</div>
 						<div className="d-grid gap-2 d-md-flex mt-2">
 							<Link to={"/existing-rooms"} className="btn btn-outline-info ml-5">
