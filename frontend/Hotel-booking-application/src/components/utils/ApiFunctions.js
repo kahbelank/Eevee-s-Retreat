@@ -14,20 +14,38 @@ export const getHeader = () => {
 };
 
 /* This function adds a new room room to the database */
+// export async function addRoom(photo, roomType, roomPrice) {
+//   const formData = new FormData();
+//   formData.append("photo", photo);
+//   formData.append("roomType", roomType);
+//   formData.append("roomPrice", roomPrice);
+
+//   const response = await api.post("/rooms/add/new-room", formData, {
+//     headers: getHeader(),
+//   });
+//   if (response.status === 201) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
 export async function addRoom(photo, roomType, roomPrice) {
   const formData = new FormData();
   formData.append("photo", photo);
   formData.append("roomType", roomType);
   formData.append("roomPrice", roomPrice);
 
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    // Do not set "Content-Type"
+  };
+
   const response = await api.post("/rooms/add/new-room", formData, {
-    headers: getHeader(),
+    headers: headers,
   });
-  if (response.status === 201) {
-    return true;
-  } else {
-    return false;
-  }
+  return response.status === 201;
 }
 
 /* This function gets all room types from thee database */
@@ -60,14 +78,33 @@ export async function deleteRoom(roomId) {
     throw new Error(`Error deleting room ${error.message}`);
   }
 }
-/* This function update a room */
+// /* This function update a room */
+// export async function updateRoom(roomId, roomData) {
+//   const formData = new FormData();
+//   formData.append("roomType", roomData.roomType);
+//   formData.append("roomPrice", roomData.roomPrice);
+//   formData.append("photo", roomData.photo);
+//   const response = await api.put(`/rooms/update/${roomId}`, formData, {
+//     headers: getHeader(),
+//   });
+//   return response;
+// }
+
 export async function updateRoom(roomId, roomData) {
   const formData = new FormData();
   formData.append("roomType", roomData.roomType);
   formData.append("roomPrice", roomData.roomPrice);
   formData.append("photo", roomData.photo);
+
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    // Removed "Content-Type" so axios can set it correctly for FormData
+  };
+
   const response = await api.put(`/rooms/update/${roomId}`, formData, {
-    headers: getHeader(),
+    headers,
   });
   return response;
 }
