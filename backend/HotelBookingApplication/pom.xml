@@ -8,7 +8,7 @@
 		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.avin</groupId>
+	<groupId>com.eevee</groupId>
 	<artifactId>HotelBookingApplication</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>HotelBookingApplication</name>
