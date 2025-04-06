@@ -14,7 +14,15 @@
             "hostPort": 80,
             "protocol": "tcp"
           }
-        ]
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/Eevees_retreat",
+            "awslogs-region": "ap-southeast-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        }
       }
     ],
     "requiresCompatibilities": ["EC2"],
