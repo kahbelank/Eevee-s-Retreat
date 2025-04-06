@@ -5,7 +5,7 @@ COPY frontend/Hotel-booking-application ./
 RUN npm install && npm run build
 
 # === Build Backend ===
-FROM maven:3.8.7-openjdk-17 AS backend
+FROM maven:3.9.6-eclipse-temurin-17 AS backend
 WORKDIR /app
 COPY backend/HotelBookingApplication ./HotelBookingApplication
 COPY --from=frontend /app/dist ./HotelBookingApplication/src/main/resources/static
