@@ -40,13 +40,13 @@ jobs:
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
             - name: Download and clean task definition
-                run: |
-                  aws ecs describe-task-definition \
-                    --task-definition ${{ secrets.ECS_CONTAINER_DEFINITION }} \
-                    --query 'taskDefinition' \
-                    --output json > raw-task-definition.json
+              run: |
+                aws ecs describe-task-definition \
+                  --task-definition ${{ secrets.ECS_CONTAINER_DEFINITION }} \
+                  --query 'taskDefinition' \
+                  --output json > raw-task-definition.json
 
-                  jq 'del(.revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .taskDefinitionArn)' raw-task-definition.json > task-definition.json
+                jq 'del(.revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .taskDefinitionArn)' raw-task-definition.json > task-definition.json
 
 
             - name: Fill in the new image ID in the Amazon ECS task definition
