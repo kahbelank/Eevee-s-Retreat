@@ -1,0 +1,25 @@
+{
+    "family": "Eevees_retreat",
+    "networkMode": "bridge",
+    "containerDefinitions": [
+      {
+        "name": "Eevees_retreat",
+        "image": "518002995474.dkr.ecr.ap-southeast-1.amazonaws.com/eevees_retreat_app:latest",
+        "cpu": 1024,
+        "memory": 3072,
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "hostPort": 80,
+            "protocol": "tcp"
+          }
+        ]
+      }
+    ],
+    "requiresCompatibilities": ["EC2"],
+    "cpu": "1024",
+    "memory": "3072",
+    "executionRoleArn": "arn:aws:iam::518002995474:role/ecsTaskExecutionRole"
+  }
+  
