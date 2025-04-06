@@ -1,8 +1,7 @@
 # ==== Build Frontend ====
 FROM node:18 AS frontend
 WORKDIR /app
-COPY frontend ./frontend
-WORKDIR /app/frontend
+COPY ./frontend ./
 RUN npm install && npm run build
 
 # ==== Build Backend ====
@@ -11,7 +10,7 @@ WORKDIR /app
 COPY backend/HotelBookingApplication ./HotelBookingApplication
 
 # Copy built frontend into Spring Boot static resources
-COPY --from=frontend /app/frontend/dist ./HotelBookingApplication/src/main/resources/static
+COPY --from=frontend /app/dist ./HotelBookingApplication/src/main/resources/static
 
 WORKDIR /app/HotelBookingApplication
 RUN mvn clean package -DskipTests && ls -la target
@@ -19,9 +18,6 @@ RUN mvn clean package -DskipTests && ls -la target
 # ==== Final Image ====
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-
-# Copy the built JAR from the backend stage
 COPY --from=backend /app/HotelBookingApplication/target/*.jar app.jar
-
 EXPOSE 80
 ENTRYPOINT ["java", "-jar", "app.jar"]
