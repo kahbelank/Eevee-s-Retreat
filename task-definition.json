@@ -5,8 +5,8 @@
       {
         "name": "Eevees_retreat",
         "image": "518002995474.dkr.ecr.ap-southeast-1.amazonaws.com/eevees_retreat_app:latest",
-        "memory": "512",
-        "cpu": "256",
+        "cpu": 512,
+        "memory": 512,
         "essential": true,
         "portMappings": [
           {
@@ -27,7 +27,7 @@
     ],
     "requiresCompatibilities": ["EC2"],
     "cpu": "512",
-    "memory": "256",
+    "memory": "512",
     "executionRoleArn": "arn:aws:iam::518002995474:role/ecsTaskExecutionRole"
   }
   
