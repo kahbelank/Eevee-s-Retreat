@@ -50,6 +50,9 @@ public class BookedRoom {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String status;
+    private String details;
+
     public void calculateTotalNumberOfGuest() {
         this.totalNumOfGuest = this.NumOfAdults + NumOfChildren;
     }
@@ -66,5 +69,16 @@ public class BookedRoom {
 
     public void setBookingConfirmationCode(String bookingConfirmationCode) {
         this.bookingConfirmationCode = bookingConfirmationCode;
+    }
+
+    // Save current state
+    public BookingMemento saveState() {
+        return new BookingMemento(this.status, this.details);
+    }
+
+    // Restore to previous state
+    public void restoreState(BookingMemento memento) {
+        this.status = memento.getStatus();
+        this.details = memento.getDetails();
     }
 }
