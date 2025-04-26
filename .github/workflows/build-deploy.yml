@@ -14,6 +14,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      ####################################
+      # ESLint Phase 1
+      ####################################
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        working-directory: frontend/hotel-booking-application
+        run: npm install
+
+      - name: Run ESLint
+        working-directory: frontend/hotel-booking-application
+        run: npm run lint
+      ####################################
+
+      ####################################
+      # ESLint Phase 3
+      ####################################
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
