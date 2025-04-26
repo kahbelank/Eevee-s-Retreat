@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext } from "react"
 import MainHeader from "../layout/MainHeader"
 import HotelService from "../common/HotelService"
@@ -19,7 +20,7 @@ const Home = () => {
 			)}
 			<MainHeader />
 			
-				<RoomSearch />
+				<RoomSearch/>
 				<RoomCarousel />
 				<Parallax />
 				<RoomCarousel />
