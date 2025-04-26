@@ -32,7 +32,7 @@ jobs:
 
       - name: Run FrontEnd
         working-directory: frontend/Hotel-booking-application
-        run: npm run dev
+        run: nohup npm run dev & sleep 10
 
       ####################################
       # Backend Unit Tests Phase (Java)
