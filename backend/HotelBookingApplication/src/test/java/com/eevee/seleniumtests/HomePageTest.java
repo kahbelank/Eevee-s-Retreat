@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,8 +19,15 @@ public class HomePageTest {
 
     @BeforeAll
     public static void setup() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        WebDriverManager.chromedriver().driverVersion("135.0.7049.114").setup();
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // CI/CD compatibility
+        options.addArguments("--no-sandbox"); // Helps with permission issues
+        options.addArguments("--disable-dev-shm-usage"); // Prevents crashes in Linux environments
+        options.addArguments("--user-data-dir=/tmp/chrome-profile"); // Ensures a unique Chrome session
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
@@ -43,7 +51,7 @@ public class HomePageTest {
             Assertions.assertTrue(driver.getPageSource().contains(text), "Missing text: " + text);
         }
 
-        // Handling split text
+        // Handling split text issue
         Assertions.assertTrue(driver.getPageSource().contains("Giving the best") &&
                               driver.getPageSource().contains("just for you"));
 

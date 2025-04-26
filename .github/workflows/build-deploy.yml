@@ -51,6 +51,12 @@ jobs:
       ################################
       # Phase 2: Selenium Test (E2E) #
       ################################
+      - name: Install Chrome for Selenium
+        run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+
+      - name: Run Selenium E2E Tests
+        working-directory: backend/HotelBookingApplication
+        run: mvn test -Dgroups="selenium"
 
       ################################
       # Phase 3: Build and Deploy    #
