@@ -44,19 +44,16 @@ jobs:
         working-directory: backend/HotelBookingApplication
         run: mvn install -DskipTests=true
 
-      - name: Run Unit Tests (Backend)
-        working-directory: backend/HotelBookingApplication
-        run: mvn test
-
-      ################################
-      # Phase 2: Selenium Test (E2E) #
-      ################################
       - name: Install Chrome for Selenium
         run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
 
       - name: Run Selenium E2E Tests
         working-directory: backend/HotelBookingApplication
         run: mvn test -Dgroups="selenium"
+
+      - name: Run Unit Tests (Backend)
+        working-directory: backend/HotelBookingApplication
+        run: mvn test
 
       ################################
       # Phase 3: Build and Deploy    #
