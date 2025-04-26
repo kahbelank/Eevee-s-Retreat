@@ -14,9 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      ####################################
-      # ESLint Phase 1
-      ####################################
+      ##########################
+      #  Phase 1: ESLint Check  #
+      ##########################
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -29,11 +29,32 @@ jobs:
       - name: Run ESLint
         working-directory: frontend/Hotel-booking-application
         run: npm run lint
-      ####################################
 
       ####################################
-      # ESLint Phase 3
+      # Backend Unit Tests Phase (Java)
       ####################################
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Install Maven dependencies
+        working-directory: backend/HotelBookingApplication
+        run: mvn install -DskipTests=true
+
+      - name: Run Unit Tests (Backend)
+        working-directory: backend/HotelBookingApplication
+        run: mvn test
+
+      ################################
+      # Phase 2: Selenium Test (E2E) #
+      ################################
+
+      ################################
+      # Phase 3: Build and Deploy    #
+      ################################
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

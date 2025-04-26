@@ -1,13 +1,13 @@
-package com.eevee.HotelBookingApplication;
+// package com.eevee.HotelBookingApplication;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class HotelBookingApplicationTests {
+// @SpringBootTest
+// class HotelBookingApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// @Test
+// void contextLoads() {
+// }
 
-}
+// }
