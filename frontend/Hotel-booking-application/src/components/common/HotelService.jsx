@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 import React from "react"
 import { Container, Row, Col, Card } from "react-bootstrap"
 import Header from "./Header"

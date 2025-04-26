@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { parseISO } from "date-fns"
 import React, { useState, useEffect } from "react"
 import DateSlider from "../common/DateSlider"

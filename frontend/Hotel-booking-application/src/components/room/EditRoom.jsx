@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react"
 import { getRoomById, updateRoom } from "../utils/ApiFunctions"
 import { Link, useParams } from "react-router-dom"
