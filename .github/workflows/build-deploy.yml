@@ -23,11 +23,11 @@ jobs:
           node-version: "18"
 
       - name: Install frontend dependencies
-        working-directory: frontend/hotel-booking-application
+        working-directory: frontend/Hotel-booking-application
         run: npm install
 
       - name: Run ESLint
-        working-directory: frontend/hotel-booking-application
+        working-directory: frontend/Hotel-booking-application
         run: npm run lint
       ####################################
 
