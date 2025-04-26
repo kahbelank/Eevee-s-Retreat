@@ -30,6 +30,10 @@ jobs:
         working-directory: frontend/Hotel-booking-application
         run: npm run lint
 
+      - name: Run FrontEnd
+        working-directory: frontend/Hotel-booking-application
+        run: npm run dev
+
       ####################################
       # Backend Unit Tests Phase (Java)
       ####################################
@@ -47,13 +51,13 @@ jobs:
       - name: Install Chrome for Selenium
         run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
 
-      - name: Run Selenium E2E Tests
-        working-directory: backend/HotelBookingApplication
-        run: mvn test -Dgroups="selenium"
-
       - name: Run Unit Tests (Backend)
         working-directory: backend/HotelBookingApplication
         run: mvn test
+
+      - name: Run Selenium E2E Tests
+        working-directory: backend/HotelBookingApplication
+        run: mvn test -Dgroups="selenium"
 
       ################################
       # Phase 3: Build and Deploy    #
