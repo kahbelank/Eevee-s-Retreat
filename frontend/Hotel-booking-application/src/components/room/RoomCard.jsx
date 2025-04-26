@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useContext } from "react"
 import { Card, Col } from "react-bootstrap"
