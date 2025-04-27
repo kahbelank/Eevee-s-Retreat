@@ -30,8 +30,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private boolean isWhitelisted(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/auth/");
+        return path.equals("/") || 
+               path.startsWith("/auth/") || 
+               path.startsWith("/rooms/") || 
+               path.startsWith("/bookings/");
     }
+    
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
