@@ -27,7 +27,7 @@ public class CorsConfig {
         // config.addAllowedOrigin("http://localhost:5173");
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
-                "http://54.254.188.188"));
+                "http://47.128.151.135"));
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
