@@ -9,10 +9,10 @@ on:
 jobs:
   buid-deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: ESLint Check
+    name: Build and Deploy
     runs-on: ubuntu-latest
     environment: 
-      name: EC2 Credentials
+      name: EC2
     steps:
       - name: Set up AWS CLI
         run: |
