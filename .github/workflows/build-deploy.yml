@@ -1,67 +1,25 @@
 name: Eevees-Retreat Application
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Eevees-Retreat Build and Test"]
+    types:
+      - completed
 
 jobs:
-  deploy:
-    name: Build and Deploy
+  buid-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: ESLint Check
     runs-on: ubuntu-latest
-
+    environment: 
+      name: EC2
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Set up AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -o awscliv2.zip
+          sudo ./aws/install --update
 
-      ##########################
-      #  Phase 1: ESLint Check  #
-      ##########################
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Install frontend dependencies
-        working-directory: frontend/Hotel-booking-application
-        run: npm install
-
-      - name: Run ESLint
-        working-directory: frontend/Hotel-booking-application
-        run: npm run lint
-
-      - name: Run FrontEnd
-        working-directory: frontend/Hotel-booking-application
-        run: nohup npm run dev -- --host 0.0.0.0 & sleep 10
-
-      ####################################
-      # Backend Unit Tests Phase (Java)
-      ####################################
-
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-
-      - name: Install Maven dependencies
-        working-directory: backend/HotelBookingApplication
-        run: mvn install -DskipTests=true
-
-      - name: Install Chrome for Selenium
-        run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
-
-      - name: Run Unit Tests (Backend)
-        working-directory: backend/HotelBookingApplication
-        run: mvn test
-
-      - name: Run Selenium E2E Tests
-        working-directory: backend/HotelBookingApplication
-        run: mvn test -Dgroups="selenium"
-
-      ################################
-      # Phase 3: Build and Deploy    #
-      ################################
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -69,31 +27,89 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: eevees_retreat_app
-          IMAGE_TAG: latest
+      - name: Launch EC2 Instance
+        id: launch
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          AMI_ID=$(aws ec2 describe-images --owners amazon \
+            --filters "Name=name,Values=ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*" \
+            --query 'Images[*].[ImageId,CreationDate]' \
+            --output text | sort -k2 -r | head -n1 | awk '{print $1}')
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ secrets.CONTAINER_NAME }}
-          image: ${{ steps.login-ecr.outputs.registry }}/eevees_retreat_app:latest
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id $AMI_ID \
+            --instance-type t2.micro \
+            --key-name ${{ secrets.EC2_KEY_PAIR_NAME }} \
+            --security-groups launch-wizard-2 \
+            --query 'Instances[0].InstanceId' \
+            --output text)
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ secrets.ECS_SERVICE }}
-          cluster: ${{ secrets.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+          
+          # Tag the instance
+          aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=nus-swe5006
+
+          PUBLIC_IP=$(aws ec2 describe-instances \
+            --instance-ids $INSTANCE_ID \
+            --query "Reservations[0].Instances[0].PublicIpAddress" \
+            --output text)
+
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
+      - name: Save PEM file
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_KEY_PAIR }}" > ~/.ssh/ec2-key-pair.pem
+          chmod 600 ~/.ssh/ec2-key-pair.pem
+
+      - name: Wait for EC2 finish connect
+        run: |
+          echo "Waiting for SSH at $PUBLIC_IP..."
+          for i in {1..6}; do
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP 'echo ready' && break
+            echo "Retrying SSH..."
+            sleep 10
+          done
+
+      - name: Deploy app on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP <<EOF
+            export PUBLIC_IP=$PUBLIC_IP
+            sudo apt update
+            sudo apt install -y docker.io docker-compose git
+            sudo usermod -a -G docker ubuntu
+            id ubuntu
+            newgrp docker
+            git clone -b release https://${{ secrets.GH_DEPLOY_TOKEN }}@github.com/${{ github.repository }} app
+            cd app
+            sed -i 's|VITE_API_URL=http://localhost:3000|VITE_API_URL=http://'"$PUBLIC_IP"':3000|' frontend/.env
+            echo "✅ Updated .env file:"
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            docker-compose up -d --build
+          EOF
+
+      # - name: Deploy app on EC2
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP << 'EOF'
+      #       # Set up environment
+      #       export PUBLIC_IP=$PUBLIC_IP
+            
+      #       # Clone the release branch
+      #       git clone -b release https://${{ secrets.GH_DEPLOY_TOKEN }}@github.com/${{ github.repository }} project
+      #       cd project
+
+      #       # === Frontend ===
+      #       echo "⚙️ Setting up frontend..."
+      #       cd frontend/Hotel-booking-application
+      #       sed -i "s|VITE_API_URL=http://localhost:3000|VITE_API_URL=http://$PUBLIC_IP:3000|" .env
+      #       npm install
+      #       nohup npm run dev > frontend.log 2>&1 &
+
+      #       # === Backend ===
+      #       echo "⚙️ Setting up backend..."
+      #       cd ../../backend/HotelBookingApplication
+      #       chmod +x mvnw
+      #       ./mvnw clean install
+      #       nohup mvn spring-boot:run > backend.log 2>&1 &
+
+      #       echo "🚀 Deployment complete. Frontend on port 5173, backend on port 3000."
+      #     EOF

@@ -1,0 +1,64 @@
+name: Eevees-Retreat Build and Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ESLintCheck:
+    name: ESLint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      ##########################
+      #  Phase 1: ESLint Check  #
+      ##########################
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        working-directory: frontend/Hotel-booking-application
+        run: npm install
+
+      - name: Run ESLint
+        working-directory: frontend/Hotel-booking-application
+        run: npm run lint
+
+      - name: Run FrontEnd
+        working-directory: frontend/Hotel-booking-application
+        run: nohup npm run dev -- --host 0.0.0.0 & sleep 10
+
+
+      ####################################
+      # Backend Unit Tests Phase (Java)
+      ####################################
+  BackendTest:
+    needs: ESLintCheck
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: "temurin"
+        java-version: "17"
+
+    - name: Install Maven dependencies
+      working-directory: backend/HotelBookingApplication
+      run: mvn install -DskipTests=true
+
+    - name: Install Chrome for Selenium
+      run: sudo apt-get update && sudo apt-get install -y google-chrome-stable
+
+    - name: Run Unit Tests (Backend)
+      working-directory: backend/HotelBookingApplication
+      run: mvn test
+
+    - name: Run Selenium E2E Tests
+      working-directory: backend/HotelBookingApplication
+      run: mvn test -Dgroups="selenium"
