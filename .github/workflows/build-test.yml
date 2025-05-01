@@ -14,6 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: List workspace contents
+        run: ls -R
+
       ##########################
       #    ESLint Check        #
       ##########################
@@ -41,7 +44,7 @@ jobs:
   BackendTest:
     needs: ESLintCheck
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Set up Java
         uses: actions/setup-java@v3
