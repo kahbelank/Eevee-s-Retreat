@@ -12,7 +12,7 @@ jobs:
     name: ESLint Check
     runs-on: ubuntu-latest
     environment: 
-      name: EC2
+      name: EC2 Credentials
     steps:
       - name: Set up AWS CLI
         run: |
