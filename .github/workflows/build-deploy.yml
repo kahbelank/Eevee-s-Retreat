@@ -38,7 +38,7 @@ jobs:
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id $AMI_ID \
             --instance-type t2.micro \
-            --key-name ${{ secrets.EC2_KEY_PAIR_NAME }} \
+            --key-name ${{ secrets.EC2_KEY_PAIR }} \
             --security-groups default \
             --query 'Instances[0].InstanceId' \
             --output text)
