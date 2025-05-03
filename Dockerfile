@@ -26,5 +26,5 @@ WORKDIR /app
 # Copy the generated JAR
 COPY --from=backend /app/HotelBookingApplication/target/*.jar app.jar
 
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
