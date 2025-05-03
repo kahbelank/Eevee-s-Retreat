@@ -70,4 +70,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        // Skip JWT filter on public endpoints
+        return path.startsWith("/auth") || path.startsWith("/rooms") || path.startsWith("/bookings");
+    }
 }
