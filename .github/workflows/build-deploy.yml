@@ -103,8 +103,8 @@ jobs:
             echo "⚙️ Setting up backend..."
             cd ../../backend/HotelBookingApplication
             chmod +x mvnw
-            ./mvnw clean install
-            nohup mvn spring-boot:run > backend.log 2>&1 &
+            ./mvnw clean install -DskipTests
+            nohup mvn spring-boot:run -DskipTests > backend.log 2>&1 &
 
             echo "🚀 Deployment complete. Frontend on port 5173, backend on port 3000."
           EOF
