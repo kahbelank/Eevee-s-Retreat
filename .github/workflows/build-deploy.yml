@@ -53,6 +53,8 @@ jobs:
             --query "Reservations[0].Instances[0].PublicIpAddress" \
             --output text)
 
+          echo PUBLIC IP = ${PUBLIC_IP}
+
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
       - name: Save PEM file
@@ -74,7 +76,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP << 'EOF'
             #Set public ip to replace in env file later 
-            PUBLIC_IP=${PUBLIC_IP}
+            export PUBLIC_IP=${PUBLIC_IP}
 
             echo "🔧 Installing dependencies..."
 
