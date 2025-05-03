@@ -74,9 +74,9 @@ jobs:
 
       - name: Deploy app on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP << EOF
             #Set public ip to replace in env file later 
-            export PUBLIC_IP=${PUBLIC_IP}
+            PUBLIC_IP=${PUBLIC_IP}
             echo PUBLIC IP = ${PUBLIC_IP}
 
             echo "🔧 Installing dependencies..."
