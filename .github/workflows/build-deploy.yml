@@ -73,8 +73,8 @@ jobs:
       - name: Deploy app on EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key-pair.pem ubuntu@$PUBLIC_IP << 'EOF'
-            # Set up environment
-            export PUBLIC_IP=$PUBLIC_IP
+            #Set public ip to replace in env file later 
+            PUBLIC_IP=${PUBLIC_IP}
 
             echo "🔧 Installing dependencies..."
 
@@ -106,5 +106,6 @@ jobs:
             ./mvnw clean install -DskipTests
             nohup mvn spring-boot:run -DskipTests > backend.log 2>&1 &
 
-            echo "🚀 Deployment complete. Frontend on port 5173, backend on port 3000."
+            echo "🚀 Deployment complete."
+            echo "🔗 Frontend: http://$PUBLIC_IP:5173"
           EOF
