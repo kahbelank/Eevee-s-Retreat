@@ -95,9 +95,9 @@ jobs:
             # === Frontend ===
             echo "⚙️ Setting up frontend..."
             cd frontend/Hotel-booking-application
-            sed -i "s|VITE_API_URL=http://localhost:3000|VITE_API_URL=http://$PUBLIC_IP:3000|" .env
+            sed -i "s|VITE_API_URL=http://localhost:8080|VITE_API_URL=http://$PUBLIC_IP:8080|" .env
             npm install
-            nohup npm run dev > frontend.log 2>&1 &
+            nohup npm run dev -- --host > frontend.log 2>&1 &
 
             # === Backend ===
             echo "⚙️ Setting up backend..."
