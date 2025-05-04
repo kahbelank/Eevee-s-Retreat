@@ -28,24 +28,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private HotelUserDetailsService userDetailsService;
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
-    private boolean isWhitelisted(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return path.equals("/") || 
-               path.startsWith("/auth") || 
-               path.startsWith("/rooms") || 
-               path.startsWith("/bookings");
-    }
-    
+    // private boolean isWhitelisted(HttpServletRequest request) {
+    // String path = request.getServletPath();
+    // return path.equals("/") ||
+    // path.startsWith("/auth") ||
+    // path.startsWith("/rooms") ||
+    // path.startsWith("/bookings");
+    // }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if (isWhitelisted(request)) {
-            // Skip authentication for whitelisted paths
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // if (isWhitelisted(request)) {
+        // // Skip authentication for whitelisted paths
+        // filterChain.doFilter(request, response);
+        // return;
+        // }
 
         try {
             String jwt = parseJwt(request);
@@ -75,6 +74,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
         // Skip JWT filter on public endpoints
-        return path.startsWith("/auth") || path.startsWith("/rooms") || path.startsWith("/bookings")|| path.startsWith("/error");
+        return path.startsWith("/auth") || path.equals("/") || path.startsWith("/rooms/all")
+                || path.startsWith("/rooms/room/types") || path.startsWith("/error");
+
     }
 }
