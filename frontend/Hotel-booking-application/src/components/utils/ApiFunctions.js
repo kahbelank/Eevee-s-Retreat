@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import.meta.env.VITE_API_URL;
+// import.meta.env.VITE_API_URL;
 
 export const api = axios.create({
-  baseURL: VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_UR,
 });
 
 export const getHeader = () => {
