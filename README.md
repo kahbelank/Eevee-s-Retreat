@@ -1,6 +1,6 @@
 # 🏨 Eevee’s Retreat - Hotel Booking and Management System  
 
-## Team Members
+## Team Members 
 1. Ho Zheng Wei 
 2. Izz Danial Bin Selamat
 3. James Nicolas Tan Cher Wei 
