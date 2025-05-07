@@ -159,16 +159,23 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
-      - name: Run Semgrep Scan with HTML Report
+      - name: Run Semgrep to JSON
         run: |
-          semgrep scan --config auto --html --output semgrep-report.html .
+          semgrep scan \
+            --config auto \
+            --json \
+            --output semgrep-report.json .
+
+      - name: Export HTML report
+        run: |
+          semgrep export html semgrep-report.json \
+            --output semgrep-report.html
 
       - name: Upload SAST HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-sast-html-report
           path: semgrep-report.html
-
 
 
   # # 3. OWASP Dependency-Check
