@@ -256,13 +256,24 @@ jobs:
           echo "Launching $JAR"
           nohup java -jar "$JAR" --server.address=0.0.0.0 \
             > zap-backend.log 2>&1 &
-          echo "Waiting for backend to start…" && sleep 20
       
-      - name: Show backend startup logs
+      - name: Wait for Spring Boot to finish startup
         working-directory: backend/HotelBookingApplication
         run: |
-            echo "---- first 20 lines of zap-backend.log ----"
-            head -n 20 zap-backend.log
+          echo "Waiting for 'Started HotelBookingApplication' in zap-backend.log..."
+          for i in {1..12}; do
+            if grep -q "Started HotelBookingApplication" zap-backend.log; then
+              echo "Application started!"
+              break
+            fi
+            echo "…not there yet. Sleeping 5s ($i/12)"
+            sleep 5
+          done
+          
+      - name: Smoke-check Backend
+        run: |
+          curl --retry 5 --retry-connrefused --retry-delay 5 \
+              -sSf http://127.0.0.1:8080
 
       - name: Smoke-check Backend
         run: |
