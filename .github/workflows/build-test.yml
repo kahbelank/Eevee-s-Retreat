@@ -161,13 +161,14 @@ jobs:
 
       - name: Run Semgrep Scan with HTML Report
         run: |
-          semgrep --config=auto --format html --output semgrep-report.html .
+          semgrep scan --config auto -f html -o semgrep-report.html .
 
       - name: Upload SAST HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-sast-html-report
           path: semgrep-report.html
+
 
 
   # # 3. OWASP Dependency-Check
