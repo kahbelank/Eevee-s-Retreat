@@ -71,6 +71,15 @@ public class BookedRoom {
         this.bookingConfirmationCode = bookingConfirmationCode;
     }
 
+    /**
+     * Returns true if this booking period overlaps with the other booking.
+     */
+    public boolean overlapsWith(BookedRoom other) {
+        // Two intervals [A, B] and [C, D] overlap iff A ≤ D && C ≤ B
+        return !this.checkInDate.isAfter(other.checkOutDate)
+            && !other.checkInDate.isAfter(this.checkOutDate);
+    }
+
     // Save current state
     public BookingMemento saveState() {
         return new BookingMemento(this.status, this.details);
