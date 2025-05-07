@@ -257,6 +257,12 @@ jobs:
           nohup java -jar "$JAR" --server.address=0.0.0.0 \
             > zap-backend.log 2>&1 &
           echo "Waiting for backend to start…" && sleep 20
+      
+      - name: Show backend startup logs
+        working-directory: backend/HotelBookingApplication
+        run: |
+            echo "---- first 20 lines of zap-backend.log ----"
+            head -n 20 zap-backend.log
 
       - name: Smoke-check Backend
         run: |
