@@ -216,20 +216,42 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Start Backend
+      # Start the frontend here (install & serve)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        working-directory: frontend/Hotel-booking-application
+        run: npm install
+
+      - name: Start Frontend App
+        working-directory: frontend/Hotel-booking-application
+        run: |
+          nohup npm run dev -- --host 127.0.0.1 --port 5173 > zap-frontend.log 2>&1 &
+          echo "Waiting for frontend to start…" && sleep 15
+
+      # Verify frontend is up
+      - name: Smoke-check Frontend
+        run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:5173
+
+      # Start the backend
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Start Backend App
         working-directory: backend/HotelBookingApplication
         run: |
           nohup mvn spring-boot:run > zap-backend.log 2>&1 &
-          sleep 20
+          echo "Waiting for backend to start…" && sleep 20
 
-      - name: Start Frontend (reuse build)
-        working-directory: frontend/Hotel-booking-application
-        run: |
-          # assuming already running from FrontendBuild; or restart if needed
-          curl -sSf http://127.0.0.1:5173
-
+      # Run ZAP against the running apps
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
@@ -241,6 +263,7 @@ jobs:
         with:
           name: zap-report
           path: zap-report.html
+
 
   # 5. Backend Maven install > unit & e2e
   BackendTest:
