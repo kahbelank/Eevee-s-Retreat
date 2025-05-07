@@ -215,46 +215,32 @@ jobs:
     needs: FrontendBuild
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 1) Start Frontend on 0.0.0.0
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Install frontend dependencies
+      # Frontend
+      - uses: actions/setup-node@v3
+        with: { node-version: "18" }
+      - run: npm install
         working-directory: frontend/Hotel-booking-application
-        run: npm install
-
-      - name: Start Frontend App
-        working-directory: frontend/Hotel-booking-application
-        run: |
+      - run: |
           nohup npm run dev -- --host 0.0.0.0 --port 5173 > zap-frontend.log 2>&1 &
-          echo "Waiting for frontend…" && sleep 15
+          sleep 15
+      - run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:5173
 
-      - name: Smoke-check Frontend
-        run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:5173
-
-      # 2) Start Backend on 0.0.0.0
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      # Backend
+      - uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: "17"
-
-      - name: Start Spring Boot App
+      - name: Build and start Spring Boot JAR
         working-directory: backend/HotelBookingApplication
         run: |
-          nohup mvn spring-boot:run \
-            -Dspring-boot.run.arguments="--server.address=0.0.0.0" > zap-backend.log 2>&1 &
-          echo "Waiting for backend…" && sleep 20
+          mvn clean package -DskipTests=true
+          nohup java -jar target/*.jar --server.address=0.0.0.0 > zap-backend.log 2>&1 &
+          sleep 20
+      - run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:8080
 
-      - name: Smoke-check Backend
-        run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:8080
-
-      # 3) Run ZAP
+      # ZAP Scan
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
@@ -265,8 +251,8 @@ jobs:
           fail_action: false
           allow_issue_writing: true
 
-      - name: Upload ZAP report
-        uses: actions/upload-artifact@v4
+      # Upload report
+      - uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: zap-report.html
