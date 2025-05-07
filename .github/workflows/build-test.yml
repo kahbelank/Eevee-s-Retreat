@@ -5,18 +5,95 @@ on:
     branches:
       - main
 
+# jobs:
+#   ESLintCheck:
+#     name: ESLint Check
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       ##########################
+#       #    ESLint Check        #
+#       ##########################
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: "18"
+
+#       - name: Install frontend dependencies
+#         working-directory: frontend/Hotel-booking-application
+#         run: npm install
+
+#       - name: Run ESLint
+#         working-directory: frontend/Hotel-booking-application
+#         run: npm run lint
+
+#       - name: Run FrontEnd
+#         working-directory: frontend/Hotel-booking-application
+#         run: nohup npm run dev -- --host 0.0.0.0 & sleep 10
+
+#   BackendTest:
+#     needs: ESLintCheck
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Java
+#         uses: actions/setup-java@v3
+#         with:
+#           distribution: "temurin"
+#           java-version: "17"
+
+#       - name: Install Maven dependencies
+#         working-directory: backend/HotelBookingApplication
+#         run: mvn install -DskipTests=true
+
+#       - name: Install Node.js for Frontend
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: "18"
+
+#       - name: Install Frontend Dependencies
+#         working-directory: frontend/Hotel-booking-application
+#         run: npm install
+
+#       - name: Start Frontend App
+#         working-directory: frontend/Hotel-booking-application
+#         run: |
+#           nohup npm run dev -- --host 127.0.0.1 --port 5173 > frontend.log 2>&1 &
+#           sleep 5
+
+#       - name: Wait for Frontend to be Ready
+#         run: |
+#           for i in {1..5}; do
+#             curl -sSf http://127.0.0.1:5173 && break
+#             echo "Waiting for frontend..."
+#             sleep 5
+#           done
+
+#       - name: Run Unit Tests (Backend)
+#         working-directory: backend/HotelBookingApplication
+#         run: mvn test -Dgroups="!selenium"
+
+#       - name: Run Selenium E2E Tests
+#         working-directory: backend/HotelBookingApplication
+#         run: mvn test -Dgroups="selenium"
+
+
 jobs:
-  ESLintCheck:
-    name: ESLint Check
+  # 1. Lint and Run React app
+  FrontendBuild:
+    name: Frontend Build & Smoke Test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      ##########################
-      #    ESLint Check        #
-      ##########################
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -30,13 +107,85 @@ jobs:
         working-directory: frontend/Hotel-booking-application
         run: npm run lint
 
-      - name: Run FrontEnd
+      - name: Start Frontend App
         working-directory: frontend/Hotel-booking-application
-        run: nohup npm run dev -- --host 0.0.0.0 & sleep 10
+        run: |
+          nohup npm run dev -- --host 127.0.0.1 --port 5173 > frontend.log 2>&1 &
+          sleep 10
 
-  BackendTest:
-    needs: ESLintCheck
+      - name: Smoke Check
+        run: curl -sSf http://127.0.0.1:5173
+
+  # 2. OWASP Dependency-Check (runs after frontend is up)
+  DependencyCheck:
+    name: OWASP Dependency-Check
     runs-on: ubuntu-latest
+    needs: FrontendBuild
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Run Dependency-Check
+        working-directory: backend/HotelBookingApplication
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+            -Ddependency-check.failBuildOnCVSS=7 \
+            -Dformats=ALL
+
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: backend/HotelBookingApplication/target/dependency-check-report.*
+
+  # 3. OWASP ZAP (dynamic scan against both frontend+backend)
+  SecurityScan:
+    name: OWASP ZAP Full Scan
+    runs-on: ubuntu-latest
+    needs: FrontendBuild
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Start Backend
+        working-directory: backend/HotelBookingApplication
+        run: |
+          nohup mvn spring-boot:run > zap-backend.log 2>&1 &
+          sleep 20
+
+      - name: Start Frontend (reuse build)
+        working-directory: frontend/Hotel-booking-application
+        run: |
+          # assuming already running from FrontendBuild; or restart if needed
+          curl -sSf http://127.0.0.1:5173
+
+      - name: Run ZAP full scan
+        uses: zaproxy/action-full-scan@v0.6.0
+        with:
+          target: 'http://127.0.0.1:8080'
+          cmd_options: '-t http://127.0.0.1:8080 -r zap-report.html'
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-report
+          path: zap-report.html
+
+  # 4. Backend Maven install > unit & e2e
+  BackendTest:
+    name: Backend Test Suite
+    runs-on: ubuntu-latest
+    needs:
+      - DependencyCheck
+      - SecurityScan
 
     steps:
       - name: Checkout code
@@ -51,29 +200,6 @@ jobs:
       - name: Install Maven dependencies
         working-directory: backend/HotelBookingApplication
         run: mvn install -DskipTests=true
-
-      - name: Install Node.js for Frontend
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Install Frontend Dependencies
-        working-directory: frontend/Hotel-booking-application
-        run: npm install
-
-      - name: Start Frontend App
-        working-directory: frontend/Hotel-booking-application
-        run: |
-          nohup npm run dev -- --host 127.0.0.1 --port 5173 > frontend.log 2>&1 &
-          sleep 5
-
-      - name: Wait for Frontend to be Ready
-        run: |
-          for i in {1..5}; do
-            curl -sSf http://127.0.0.1:5173 && break
-            echo "Waiting for frontend..."
-            sleep 5
-          done
 
       - name: Run Unit Tests (Backend)
         working-directory: backend/HotelBookingApplication
