@@ -249,13 +249,16 @@ jobs:
 
       - name: Build and start Spring Boot JAR
         working-directory: backend/HotelBookingApplication
+        env:
+          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+          SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.h2.Driver
+          SPRING_JPA_HIBERNATE_DDL-AUTO: create-drop
         run: |
           mvn clean package -DskipTests=true
-          # pick only the repackaged snapshot JAR (not the .jar.original)
           JAR=$(ls target/*-SNAPSHOT.jar)
-          echo "Launching $JAR"
           nohup java -jar "$JAR" --server.address=0.0.0.0 \
             > zap-backend.log 2>&1 &
+          sleep 5
       
       - name: Wait for Backend to Start
         working-directory: backend/HotelBookingApplication
