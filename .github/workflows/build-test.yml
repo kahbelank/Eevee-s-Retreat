@@ -172,7 +172,12 @@ jobs:
         with:
           sarif_file: semgrep-report.sarif
           checkout_path: .
-
+        
+      - name: Upload Semgrep SARIF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-sarif
+          path: semgrep-report.sarif
 
   # # 3. OWASP Dependency-Check
   # DependencyCheck:
