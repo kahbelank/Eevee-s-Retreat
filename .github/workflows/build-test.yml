@@ -170,7 +170,8 @@ jobs:
       - name: Upload Semgrep SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          filename: semgrep-report.sarif
+          sarif_file: semgrep-report.sarif
+          checkout_path: .
 
 
   # # 3. OWASP Dependency-Check
