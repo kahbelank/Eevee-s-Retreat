@@ -218,7 +218,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Start the frontend here (install & serve)
+      # 1) Start Frontend on 0.0.0.0
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -231,32 +231,39 @@ jobs:
       - name: Start Frontend App
         working-directory: frontend/Hotel-booking-application
         run: |
-          nohup npm run dev -- --host 127.0.0.1 --port 5173 > zap-frontend.log 2>&1 &
-          echo "Waiting for frontend to start…" && sleep 15
+          nohup npm run dev -- --host 0.0.0.0 --port 5173 > zap-frontend.log 2>&1 &
+          echo "Waiting for frontend…" && sleep 15
 
-      # Verify frontend is up
       - name: Smoke-check Frontend
         run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:5173
 
-      # Start the backend
+      # 2) Start Backend on 0.0.0.0
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Start Backend App
+      - name: Start Spring Boot App
         working-directory: backend/HotelBookingApplication
         run: |
-          nohup mvn spring-boot:run > zap-backend.log 2>&1 &
-          echo "Waiting for backend to start…" && sleep 20
+          nohup mvn spring-boot:run \
+            -Dspring-boot.run.arguments="--server.address=0.0.0.0" > zap-backend.log 2>&1 &
+          echo "Waiting for backend…" && sleep 20
 
-      # Run ZAP against the running apps
+      - name: Smoke-check Backend
+        run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:8080
+
+      # 3) Run ZAP
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
           target: 'http://127.0.0.1:8080'
           cmd_options: '-t http://127.0.0.1:8080 -r zap-report.html'
+          docker_name: ghcr.io/zaproxy/zaproxy:stable
+          issue_title: ZAP Full Scan Report
+          fail_action: false
+          allow_issue_writing: true
 
       - name: Upload ZAP report
         uses: actions/upload-artifact@v4
