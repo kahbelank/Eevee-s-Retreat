@@ -257,30 +257,26 @@ jobs:
           nohup java -jar "$JAR" --server.address=0.0.0.0 \
             > zap-backend.log 2>&1 &
       
-      - name: Wait for Spring Boot to finish startup
+      - name: Wait for Backend to Start
         working-directory: backend/HotelBookingApplication
         run: |
-          echo "Waiting for 'Started HotelBookingApplication' in zap-backend.log..."
-          for i in {1..12}; do
-            if grep -q "Started HotelBookingApplication" zap-backend.log; then
-              echo "Application started!"
-              break
-            fi
-            echo "…not there yet. Sleeping 5s ($i/12)"
+          for i in {1..20}; do
+            curl -sSf http://127.0.0.1:8080 && exit 0
+            echo "Waiting for backend… ($i/20)"
             sleep 5
           done
+          echo "Backend failed to start" && exit 1
+  
+      - name: Print Backend Logs on Failure
+        if: failure()
+        working-directory: backend/HotelBookingApplication
+        run: cat zap-backend.log
           
-      - name: Smoke-check Backend
-        run: |
-          curl --retry 5 --retry-connrefused --retry-delay 5 \
-              -sSf http://127.0.0.1:8080
-
-      - name: Smoke-check Backend
-        run: |
-          curl --retry 5 --retry-connrefused --retry-delay 5 \
-               -sSf http://127.0.0.1:8080
-
-               
+      # - name: Smoke-check Backend
+      #   run: |
+      #     curl --retry 5 --retry-connrefused --retry-delay 5 \
+      #          -sSf http://127.0.0.1:8080
+      
       # ZAP Scan
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
