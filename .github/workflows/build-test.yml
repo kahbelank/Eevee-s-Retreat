@@ -121,27 +121,54 @@ jobs:
         run: curl -sSf http://127.0.0.1:5173
 
   # 2. SAST CodeQL Static Analysis
-  StaticAnalysis:
-    name: SAST CodeQL Analysis
-    runs-on: ubuntu-latest
-    needs: FrontendBuild
+  # StaticAnalysis:
+  #   name: SAST CodeQL Analysis
+  #   runs-on: ubuntu-latest
+  #   needs: FrontendBuild
 
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v2
+  #       with:
+  #         languages: java
+
+  #     - name: Build backend for CodeQL
+  #       working-directory: backend/HotelBookingApplication
+  #       run: mvn clean install -DskipTests=true
+
+  #     - name: Run CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v2
+        
+  SASTScan:
+    name: OWASP SAST Scan (Semgrep)
+    needs: FrontendBuild
+    runs-on: ubuntu-latest
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          languages: java
+          python-version: '3.x'
+ 
+      - name: Install Semgrep
+        run: pip install semgrep
+ 
+      - name: Run Semgrep Scan with HTML Report
+        run: |
+          semgrep --config=auto --output=semgrep-report.html --output-format=html
+ 
+      - name: Upload SAST HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep-sast-html-report
+          path: semgrep-report.html
 
-      - name: Build backend for CodeQL
-        working-directory: backend/HotelBookingApplication
-        run: mvn clean install -DskipTests=true
-
-      - name: Run CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        
 
   # # 3. OWASP Dependency-Check
   # DependencyCheck:
