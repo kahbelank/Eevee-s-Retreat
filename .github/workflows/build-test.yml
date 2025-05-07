@@ -161,7 +161,7 @@ jobs:
 
       - name: Run Semgrep Scan with HTML Report
         run: |
-          semgrep scan --config auto -f html -o semgrep-report.html .
+          semgrep scan --config auto --html --output semgrep-report.html .
 
       - name: Upload SAST HTML Report
         uses: actions/upload-artifact@v4
