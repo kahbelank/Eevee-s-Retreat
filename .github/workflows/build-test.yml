@@ -146,23 +146,23 @@ jobs:
     name: OWASP SAST Scan (Semgrep)
     needs: FrontendBuild
     runs-on: ubuntu-latest
- 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
- 
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
- 
+
       - name: Install Semgrep
         run: pip install semgrep
- 
+
       - name: Run Semgrep Scan with HTML Report
         run: |
-          semgrep --config=auto --output=semgrep-report.html --output-format=html
- 
+          semgrep --config=auto --format html --output semgrep-report.html .
+
       - name: Upload SAST HTML Report
         uses: actions/upload-artifact@v4
         with:
