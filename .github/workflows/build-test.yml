@@ -168,8 +168,9 @@ jobs:
 
       - name: Export HTML report
         run: |
-          semgrep export html semgrep-report.json \
-            --output semgrep-report.html
+          semgrep export html \
+            -i semgrep-report.json \
+            -o semgrep-report.html
 
       - name: Upload SAST HTML Report
         uses: actions/upload-artifact@v4
