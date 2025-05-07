@@ -240,20 +240,30 @@ jobs:
           curl --retry 5 --retry-connrefused --retry-delay 5 \
                -sSf http://127.0.0.1:5173
 
-               
+
       # Backend
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: "17"
+
       - name: Build and start Spring Boot JAR
         working-directory: backend/HotelBookingApplication
         run: |
           mvn clean package -DskipTests=true
-          nohup java -jar target/*.jar --server.address=0.0.0.0 > zap-backend.log 2>&1 &
-          sleep 20
-      - run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:8080
+          # pick only the repackaged snapshot JAR (not the .jar.original)
+          JAR=$(ls target/*-SNAPSHOT.jar)
+          echo "Launching $JAR"
+          nohup java -jar "$JAR" --server.address=0.0.0.0 \
+            > zap-backend.log 2>&1 &
+          echo "Waiting for backend to start…" && sleep 20
 
+      - name: Smoke-check Backend
+        run: |
+          curl --retry 5 --retry-connrefused --retry-delay 5 \
+               -sSf http://127.0.0.1:8080
+
+               
       # ZAP Scan
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
