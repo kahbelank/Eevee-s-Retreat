@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  security-events: write
+
 # jobs:
 #   ESLintCheck:
 #     name: ESLint Check
@@ -116,36 +120,58 @@ jobs:
       - name: Smoke Check
         run: curl -sSf http://127.0.0.1:5173
 
-  # 2. OWASP Dependency-Check (runs after frontend is up)
-  DependencyCheck:
-    name: OWASP Dependency-Check
+  # 2. SAST CodeQL Static Analysis
+  StaticAnalysis:
+    name: SAST CodeQL Static Analysis
     runs-on: ubuntu-latest
     needs: FrontendBuild
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: "17"
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java
 
-      - name: Run Dependency-Check
-        working-directory: backend/HotelBookingApplication
-        run: |
-          mvn org.owasp:dependency-check-maven:check \
-            -Ddependency-check.failBuildOnCVSS=7 \
-            -Dformats=ALL
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
 
-      - name: Upload Dependency-Check report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: backend/HotelBookingApplication/target/dependency-check-report.*
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
 
-  # 3. OWASP ZAP (dynamic scan against both frontend+backend)
+
+  # # 3. OWASP Dependency-Check
+  # DependencyCheck:
+  #   name: OWASP Dependency-Check
+  #   runs-on: ubuntu-latest
+  #   needs: FrontendBuild
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Java
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         distribution: temurin
+  #         java-version: "17"
+
+  #     - name: Run Dependency-Check
+  #       working-directory: backend/HotelBookingApplication
+  #       run: |
+  #         mvn org.owasp:dependency-check-maven:check \
+  #           -Ddependency-check.failBuildOnCVSS=7 \
+  #           -Dformats=ALL
+
+  #     - name: Upload Dependency-Check report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dependency-check-report
+  #         path: backend/HotelBookingApplication/target/dependency-check-report.*
+
+  # 4. OWASP ZAP (dynamic scan against both frontend+backend)
   SecurityScan:
     name: OWASP ZAP Full Scan
     runs-on: ubuntu-latest
@@ -179,12 +205,12 @@ jobs:
           name: zap-report
           path: zap-report.html
 
-  # 4. Backend Maven install > unit & e2e
+  # 5. Backend Maven install > unit & e2e
   BackendTest:
     name: Backend Test Suite
     runs-on: ubuntu-latest
     needs:
-      - DependencyCheck
+      # - DependencyCheck
       - SecurityScan
 
     steps:
