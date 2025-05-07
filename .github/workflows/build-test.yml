@@ -215,18 +215,32 @@ jobs:
     needs: FrontendBuild
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       # Frontend
-      - uses: actions/setup-node@v3
-        with: { node-version: "18" }
-      - run: npm install
-        working-directory: frontend/Hotel-booking-application
-      - run: |
-          nohup npm run dev -- --host 0.0.0.0 --port 5173 > zap-frontend.log 2>&1 &
-          sleep 15
-      - run: curl --retry 5 --retry-connrefused --retry-delay 5 -sSf http://127.0.0.1:5173
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
 
+      - name: Install frontend dependencies
+        working-directory: frontend/Hotel-booking-application
+        run: npm install
+
+      - name: Start Frontend App
+        working-directory: frontend/Hotel-booking-application
+        run: |
+          nohup npm run dev -- --host 0.0.0.0 --port 5173 \
+            > zap-frontend.log 2>&1 &
+          echo "Waiting for frontend to start…" && sleep 15
+
+      - name: Smoke-check Frontend
+        run: |
+          curl --retry 5 --retry-connrefused --retry-delay 5 \
+               -sSf http://127.0.0.1:5173
+
+               
       # Backend
       - uses: actions/setup-java@v3
         with:
