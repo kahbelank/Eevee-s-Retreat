@@ -164,7 +164,7 @@ jobs:
           semgrep --config=auto --output=semgrep-report.html --output-format=html
  
       - name: Upload SAST HTML Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: semgrep-sast-html-report
           path: semgrep-report.html
