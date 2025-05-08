@@ -224,10 +224,6 @@ jobs:
       #     name: zap-report
       #     path: zap-report.html
 
-      - name: Create reports directory
-        run: mkdir -p reports
-
-   
       - name: Run OWASP ZAP Full Scan
         run: |
           mkdir -p zap-reports
