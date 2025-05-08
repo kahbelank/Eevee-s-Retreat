@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                 .exceptionHandling(
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(headers -> headers.cacheControl(cache -> cache.disable())) // ✅ ADD THIS LINE
                 .authorizeHttpRequests(auth -> auth
                         // .requestMatchers("/auth/**", "/rooms/**", "/bookings/**")
                         .requestMatchers("/", "/auth/**", "/rooms/**", "/bookings/**")
