@@ -188,7 +188,7 @@ jobs:
         working-directory: backend/HotelBookingApplication
         run: |
           for i in {1..20}; do
-            curl -sSf http://127.0.0.1:8080/rooms && exit 0
+            curl -sSf http://127.0.0.1:8080/rooms/all-rooms && exit 0
             echo "Waiting for backend… ($i/20)"
             sleep 5
           done
