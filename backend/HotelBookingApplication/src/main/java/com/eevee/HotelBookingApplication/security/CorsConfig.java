@@ -23,13 +23,18 @@ public class CorsConfig {
     public FilterRegistrationBean corsFilterRegistration() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
+        // config.setAllowCredentials(true);
         // config.addAllowedOrigin("http://localhost:5173");
         // config.setAllowedOrigins(Arrays.asList(
         //         "http://localhost:5173",
         //         "http://47.128.151.135"));
         // Allow any HTTP origin that starts with "http://"
-        config.setAllowedOriginPatterns(Arrays.asList("http://*", "http://localhost:5173"));
+        // config.setAllowedOriginPatterns(Arrays.asList("http://*", "http://localhost:5173"));
+        config.setAllowedOrigins(Arrays.asList(
+            "http://localhost:5173",       // Dev frontend
+            // "https://your-production.com"  // Production domain
+        ));
+        config.setAllowCredentials(true);
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
