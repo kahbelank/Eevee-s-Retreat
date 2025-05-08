@@ -1,0 +1,13 @@
+alertFilters:
+  - ruleId: 10049
+    newRisk: IGNORE
+    url: http://127.0.0.1:8080
+  - ruleId: 10049
+    newRisk: IGNORE
+    url: http://127.0.0.1:8080/
+  - ruleId: 10049
+    newRisk: IGNORE
+    url: http://127.0.0.1:8080/robots.txt
+  - ruleId: 10049
+    newRisk: IGNORE
+    url: http://127.0.0.1:8080/sitemap.xml
