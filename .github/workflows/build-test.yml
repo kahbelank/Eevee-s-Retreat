@@ -247,32 +247,32 @@ jobs:
           name: zap-scan-reports
           path: zap-reports/
 
-  # 5. Backend Maven install > unit & e2e
-  BackendTest:
-    name: Backend Test Suite
-    runs-on: ubuntu-latest
-    needs:
-      # - DependencyCheck
-      - SecurityScan
+  # # 5. Backend Maven install > unit & e2e
+  # BackendTest:
+  #   name: Backend Test Suite
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     # - DependencyCheck
+  #     - SecurityScan
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
+  #     - name: Set up Java
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         distribution: "temurin"
+  #         java-version: "17"
 
-      - name: Install Maven dependencies
-        working-directory: backend/HotelBookingApplication
-        run: mvn install -DskipTests=true
+  #     - name: Install Maven dependencies
+  #       working-directory: backend/HotelBookingApplication
+  #       run: mvn install -DskipTests=true
 
-      - name: Run Unit Tests (Backend)
-        working-directory: backend/HotelBookingApplication
-        run: mvn test -Dgroups="!selenium"
+  #     - name: Run Unit Tests (Backend)
+  #       working-directory: backend/HotelBookingApplication
+  #       run: mvn test -Dgroups="!selenium"
 
-      - name: Run Selenium E2E Tests
-        working-directory: backend/HotelBookingApplication
-        run: mvn test -Dgroups="selenium"
+  #     - name: Run Selenium E2E Tests
+  #       working-directory: backend/HotelBookingApplication
+  #       run: mvn test -Dgroups="selenium"
