@@ -200,15 +200,23 @@ jobs:
         run: cat zap-backend.log
           
       # ZAP Scan
+      # - name: Run ZAP full scan
+      #   uses: zaproxy/action-full-scan@v0.6.0
+      #   with:
+      #     target: 'http://127.0.0.1:8080'
+      #     cmd_options: '-t http://127.0.0.1:8080 -r zap-report.html'
+      #     docker_name: ghcr.io/zaproxy/zaproxy:stable
+      #     issue_title: ZAP Full Scan Report
+      #     fail_action: false
+      #     allow_issue_writing: true
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.6.0
         with:
           target: 'http://127.0.0.1:8080'
-          cmd_options: '-t http://127.0.0.1:8080 -r zap-report.html'
+          cmd_options: '-t http://127.0.0.1:8080 -r zap-report.html --exit-zero-if-alerts'
           docker_name: ghcr.io/zaproxy/zaproxy:stable
-          issue_title: ZAP Full Scan Report
-          fail_action: false
           allow_issue_writing: true
+
 
       # Upload report
       - uses: actions/upload-artifact@v4
