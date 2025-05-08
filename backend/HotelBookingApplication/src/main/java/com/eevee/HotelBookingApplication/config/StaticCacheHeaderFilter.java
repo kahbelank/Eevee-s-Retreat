@@ -21,9 +21,14 @@ public class StaticCacheHeaderFilter implements Filter {
 
         String path = req.getRequestURI();
 
-        if ("/".equals(path) || "/robots.txt".equals(path) || "/sitemap.xml".equals(path)) {
+        if ("/robots.txt".equals(path) || "/sitemap.xml".equals(path)) {
             res.setHeader("Cache-Control", "public, max-age=3600");
             res.setHeader("Expires", "3600");
+        } else if ("/".equals(path)) {
+            // DO NOT cache the root if it has dynamic content
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private");
+            res.setHeader("Pragma", "no-cache");
+            res.setHeader("Expires", "0");
         }
 
         chain.doFilter(request, response);

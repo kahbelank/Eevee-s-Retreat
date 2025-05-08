@@ -9,10 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class StaticResourceConfig implements WebMvcConfigurer {
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/robots.txt", "/sitemap.xml", "/")
+        registry.addResourceHandler("/robots.txt", "/sitemap.xml")
                 .addResourceLocations("classpath:/static/")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic());
     }
+
 }
