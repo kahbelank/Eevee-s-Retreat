@@ -227,7 +227,7 @@ jobs:
       - name: Run OWASP ZAP Full Scan
         run: |
           mkdir -p zap-reports
-          cp backend/HotelBookingApplication/src/main/zap-config.yaml zap-reports/zap-config.yaml
+          cp backend/HotelBookingApplication/src/main/zap-config.context zap-reports/zap-config.context
 
           docker run \
             --user root \
@@ -240,7 +240,7 @@ jobs:
             -w zap-report.md \
             -r zap-report.html \
             -I \
-            -c zap-config.yaml
+            -c zap-ignore.context
 
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
