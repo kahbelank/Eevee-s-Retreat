@@ -230,10 +230,12 @@ jobs:
    
       - name: Run OWASP ZAP Full Scan
         run: |
+          mkdir -p zap-reports
+          cp backend/HotelBookingApplication/zap-config.yaml zap-reports/zap-config.yaml
+
           docker run \
             --user root \
             --network="host" \
-            -v $(pwd)/backend/HotelBookingApplication/zap-config.yaml:/zap/wrk/zap-config.yaml:ro \
             -v $(pwd)/zap-reports:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-full-scan.py \
