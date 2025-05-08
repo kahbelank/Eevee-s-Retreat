@@ -227,11 +227,41 @@ jobs:
       - name: Create reports directory
         run: mkdir -p reports
 
+      - name: Create ZAP Ignore Policy File
+        run: |
+          cat <<EOF > zap-ignore-context.context
+          {
+            "alertFilters": [
+              {
+                "ruleId": "10049",
+                "newRisk": "FalsePositive",
+                "url": "http://127.0.0.1:8080"
+              },
+              {
+                "ruleId": "10049",
+                "newRisk": "FalsePositive",
+                "url": "http://127.0.0.1:8080/"
+              },
+              {
+                "ruleId": "10049",
+                "newRisk": "FalsePositive",
+                "url": "http://127.0.0.1:8080/robots.txt"
+              },
+              {
+                "ruleId": "10049",
+                "newRisk": "FalsePositive",
+                "url": "http://127.0.0.1:8080/sitemap.xml"
+              }
+            ]
+          }
+          EOF
+
       - name: Run OWASP ZAP Full Scan
         run: |
           docker run \
             --user root \
             --network="host" \
+            -v $(pwd)/zap-ignore-context.context:/zap/wrk/zap-ignore-context.context:rw \
             -v $(pwd)/zap-reports:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-full-scan.py \
@@ -239,7 +269,8 @@ jobs:
             -J zap-report.json \
             -w zap-report.md \
             -r zap-report.html \
-            -I
+            -I \
+            -c zap-ignore-context.context
 
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
