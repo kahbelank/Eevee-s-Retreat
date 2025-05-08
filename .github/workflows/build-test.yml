@@ -233,9 +233,9 @@ jobs:
           target: 'http://127.0.0.1:8080'
           cmd_options: >
             -t http://127.0.0.1:8080
-            -J reports/zap-report.json
-            -w reports/zap-report.md
-            -r reports/zap-report.html
+            -J zap-report.json
+            -w zap-report.md
+            -r zap-report.html
             -I
           docker_name: ghcr.io/zaproxy/zaproxy:stable
           allow_issue_writing: true
@@ -243,8 +243,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: reports/zap-report.html
-
+          path: zap-report.html
   # 5. Backend Maven install > unit & e2e
   BackendTest:
     name: Backend Test Suite
