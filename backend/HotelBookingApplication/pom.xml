@@ -127,72 +127,78 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- Override vulnerable transitive dependencies -->
+            <!-- Fix Jackson DoS vulnerability -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>2.16.0</version>
             </dependency>
 
+            <!-- Fix path traversal and resource exhaustion -->
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.14.0</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk18on</artifactId>
-                <version>1.78</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>6.1.14</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>6.1.14</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>6.1.14</version>
-            </dependency>
-
+            <!-- Upgrade Spring Security to patched version -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
                 <version>6.3.2</version>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
                 <version>6.3.2</version>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-crypto</artifactId>
                 <version>6.3.2</version>
             </dependency>
-
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-actuator-autoconfigure</artifactId>
-                <version>3.3.1</version>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>6.3.2</version>
             </dependency>
 
+            <!-- Upgrade Spring TX (DataBinder Locale case bug) -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>6.1.14</version>
+            </dependency>
+
+            <!-- Upgrade Tomcat WebSocket (RCE and SSRF bugs) -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>10.1.40</version>
+            </dependency>
+
+            <!-- Optionally match version of tomcat-embed-core -->
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>10.1.40</version>
+            </dependency>
+
+            <!-- Spring TX/Web dependency (matching the rest of Spring Framework) -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>6.1.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>6.1.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>6.1.14</version>
             </dependency>
 
         </dependencies>
