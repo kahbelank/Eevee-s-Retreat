@@ -23,8 +23,17 @@ RUN ./mvnw clean install -DskipTests && ls -la target
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
+# Create a non-root user and group
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+
 # Copy the generated JAR
 COPY --from=backend /app/HotelBookingApplication/target/*.jar app.jar
+
+# Give ownership to the non-root user
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
