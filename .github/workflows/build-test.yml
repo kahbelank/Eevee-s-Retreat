@@ -81,34 +81,34 @@ jobs:
 
 
   # # ------------ Rerun Later for AfterReview (OWASP Dependency-Check) ------------
-  # # 3. OWASP Dependency-Check
-  # DependencyCheck:
-  #   name: OWASP Dependency-Check
-  #   runs-on: ubuntu-latest
-  #   needs: FrontendBuild
+  # 3. OWASP Dependency-Check
+  DependencyCheck:
+    name: OWASP Dependency-Check
+    runs-on: ubuntu-latest
+    needs: FrontendBuild
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Set up Java
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: temurin
-  #         java-version: "17"
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: "17"
 
-  #     - name: Run Dependency-Check
-  #       working-directory: backend/HotelBookingApplication
-  #       run: |
-  #         mvn org.owasp:dependency-check-maven:check \
-  #           -Ddependency-check.failBuildOnCVSS=7 \
-  #           -Dformats=ALL
+      - name: Run Dependency-Check
+        working-directory: backend/HotelBookingApplication
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+            -Ddependency-check.failBuildOnCVSS=7 \
+            -Dformats=ALL
 
-  #     - name: Upload Dependency-Check report
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dependency-check-report
-  #         path: backend/HotelBookingApplication/target/dependency-check-report.*
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: backend/HotelBookingApplication/target/dependency-check-report.*
 
   # ------------------------------------------------------------------------------------
 
